@@ -12,7 +12,7 @@ import { useEventHandlers } from "../internal/useEventHandlers";
 import { useMemoOnce } from "../internal/useMemoOnce";
 import { MarkerEvent } from "./MarkerEvent";
 
-export interface MarkerProps {
+export interface HTMLMarkerProps {
   /**
    * Marker position.
    */
@@ -142,7 +142,7 @@ export interface MarkerProps {
   onPositionChanged?(): void;
 }
 
-export function Marker({
+export function HTMLMarker({
   position,
   title,
   visible,
@@ -169,9 +169,15 @@ export function Marker({
   onDragStart,
   onDragEnd,
   onPositionChanged,
-}: MarkerProps): null | ReactElement<object> {
+}: HTMLMarkerProps): null | ReactElement<object> {
   const map = useGoogleMap();
   const maps = useGoogleMapsAPI();
+
+
+
+
+  console.info('maps', maps);
+
   const options: google.maps.MarkerOptions = {
     title,
     visible,
@@ -188,15 +194,35 @@ export function Marker({
     animation: animation && maps.Animation[animation],
   };
 
-  if (typeof icon === "string") {
-    options.icon = icon;
+  // if (typeof icon === "string") {
+  //   options.icon = icon;
+  // }
+
+  // const changedOptions = useChangedProps(options);
+  const marker = useMemoOnce(() => new maps.OverlayView());
+
+  marker.onAdd = function () {
+    const div = document.createElement('DIV');
+    div.className = "arrow_box";
+    div.innerHTML = "<img id='testo' src='http://sve.hr/oglasnik/apartmani/male/vYfWhoqazs1-sItPo.jpg' alt=''>";
+    const panes = this.getPanes();
+    panes.overlayImage.appendChild(div);
+    // console.info('panes', panes);
+  };
+
+  marker.draw = function () {
+    var overlayProjection = this.getProjection();
+    var position = overlayProjection.fromLatLngToDivPixel(new google.maps.LatLng(44.73532729516236, 14.806330871582077));
+    var panes = this.getPanes();
+    // console.info('paneszzz', panes);
+    panes.overlayImage.style.left = position.x + 'px';
+    panes.overlayImage.style.top = position.y - 30 + 'px';
   }
 
-  const changedOptions = useChangedProps(options);
 
-  const marker = useMemoOnce(() => new maps.Marker(options));
 
-  const positionRef = useRef(marker.getPosition());
+  // console.info('marker', marker)
+  // const positionRef = useRef(marker.getPosition());
 
   useEffect(() => {
     marker.setMap(map);
@@ -206,39 +232,39 @@ export function Marker({
     };
   }, []);
 
-  useEffect(() => {
-    if (changedOptions) {
-      marker.setOptions(changedOptions as google.maps.MarkerOptions);
-    }
-  }, [changedOptions]);
+  // useEffect(() => {
+  //   if (changedOptions) {
+  //     marker.setOptions(changedOptions as google.maps.MarkerOptions);
+  //   }
+  // }, [changedOptions]);
 
-  useEventHandlers(marker, MarkerEvent, {
-    onClick,
-    onDoubleClick,
-    onRightClick,
-    onMouseOut,
-    onMouseOver,
-    onMouseDown,
-    onMouseUp,
-    onDrag,
-    onDragStart() {
-      positionRef.current = marker.getPosition();
+  // useEventHandlers(marker, MarkerEvent, {
+  //   onClick,
+  //   onDoubleClick,
+  //   onRightClick,
+  //   onMouseOut,
+  //   onMouseOver,
+  //   onMouseDown,
+  //   onMouseUp,
+  //   onDrag,
+  //   onDragStart() {
+  //     positionRef.current = marker.getPosition();
 
-      if (onDragStart) {
-        onDragStart();
-      }
-    },
-    onDragEnd() {
-      marker.setPosition(positionRef.current);
+  //     if (onDragStart) {
+  //       onDragStart();
+  //     }
+  //   },
+  //   onDragEnd() {
+  //     marker.setPosition(positionRef.current);
 
-      if (onDragEnd) {
-        onDragEnd();
-      }
-    },
-    onPositionChanged,
-  });
+  //     if (onDragEnd) {
+  //       onDragEnd();
+  //     }
+  //   },
+  //   onPositionChanged,
+  // });
 
-  return options.icon ? null : (
+  return (
     <GoogleMapMarkerContext.Provider value={marker}>
       {icon}
     </GoogleMapMarkerContext.Provider>
