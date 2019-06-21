@@ -204,7 +204,7 @@ export function HTMLMarker({
   marker.onAdd = function () {
     const div = document.createElement('DIV');
     div.className = "arrow_box";
-    div.innerHTML = "<img id='testo' src='http://sve.hr/oglasnik/apartmani/male/vYfWhoqazs1-sItPo.jpg' alt=''>";
+    div.innerHTML = "<img id='testo' src='https://svgshare.com/i/8b5.svg' alt=''>";
     const panes = this.getPanes();
     panes.overlayImage.appendChild(div);
     // console.info('panes', panes);
@@ -217,6 +217,9 @@ export function HTMLMarker({
     // console.info('paneszzz', panes);
     panes.overlayImage.style.left = position.x + 'px';
     panes.overlayImage.style.top = position.y - 30 + 'px';
+
+    console.info('panes.overlayImage.style.left', panes.overlayImage.style.left);
+
   }
 
 
@@ -265,8 +268,6 @@ export function HTMLMarker({
   // });
 
   return (
-    <GoogleMapMarkerContext.Provider value={marker}>
-      {icon}
-    </GoogleMapMarkerContext.Provider>
+    <GoogleMapMarkerContext.Provider value={marker} />
   );
 }

@@ -6,7 +6,11 @@ export const GoogleMapsAPIContext = createContext<null | typeof google.maps>(
 
 export const GoogleMapContext = createContext<null | google.maps.Map>(null);
 
-export const GoogleMapMarkerContext = createContext<null | google.maps.OverlayView>(
+export const GoogleMapMarkerContext = createContext<null | google.maps.Marker>(
+  null,
+);
+
+export const GoogleMapOverlayViewContext = createContext<null | google.maps.OverlayView>(
   null,
 );
 
@@ -36,8 +40,7 @@ export function useGoogleMap(): google.maps.Map {
   return map;
 }
 
-export function useGoogleMapMarker(): google.maps.OverlayView {
-
+export function useGoogleMapMarker(): google.maps.Marker {
   const marker = useContext(GoogleMapMarkerContext);
 
   if (!marker) {
@@ -48,4 +51,18 @@ export function useGoogleMapMarker(): google.maps.OverlayView {
   }
 
   return marker;
+}
+
+export function useGoogleMapOverlayView(): google.maps.OverlayView {
+
+  const overlayView = useContext(GoogleMapOverlayViewContext);
+
+  if (!overlayView) {
+    throw new Error(
+      "Could not find 'overlayView' in the context. " +
+      "Wrap the root component in an <Marker>.",
+    );
+  }
+
+  return overlayView;
 }
