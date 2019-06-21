@@ -1,0 +1,29 @@
+---
+menu: Basic
+name: HTMLMarker
+route: /basic/htmlmarker
+---
+
+import { Playground, PropsTable } from "docz";
+
+import { HTMLMarker } from "../HTMLMarker";
+import { DocsMap } from "../../__docs__/DocsComponents";
+
+# HTMLMarker
+
+Draws `google.maps.Marker`.
+
+**Google Maps Docs:**
+
+- [google.maps.Marker](https://developers.google.com/maps/documentation/javascript/reference#Marker)
+- [google.maps.MarkerOptions](https://developers.google.com/maps/documentation/javascript/reference#MarkerOptions)
+
+<Playground>
+  <DocsMap>
+    <HTMLMarker 
+      position={{ lat: 36, lng: -122 }}
+    />
+  </DocsMap>
+</Playground>
+
+<PropsTable of={HTMLMarker} />

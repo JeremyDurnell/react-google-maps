@@ -6,7 +6,7 @@ export const GoogleMapsAPIContext = createContext<null | typeof google.maps>(
 
 export const GoogleMapContext = createContext<null | google.maps.Map>(null);
 
-export const GoogleMapMarkerContext = createContext<null | google.maps.Marker>(
+export const GoogleMapMarkerContext = createContext<null | google.maps.OverlayView>(
   null,
 );
 
@@ -16,7 +16,7 @@ export function useGoogleMapsAPI(): typeof google.maps {
   if (!maps) {
     throw new Error(
       "Could not find 'maps' in the context. " +
-        "Wrap the root component in an <GoogleMapsAPIContext.Provider>.",
+      "Wrap the root component in an <GoogleMapsAPIContext.Provider>.",
     );
   }
 
@@ -29,20 +29,21 @@ export function useGoogleMap(): google.maps.Map {
   if (!map) {
     throw new Error(
       "Could not find 'map' in the context. " +
-        "Wrap the root component in an <Map>.",
+      "Wrap the root component in an <Map>.",
     );
   }
 
   return map;
 }
 
-export function useGoogleMapMarker(): google.maps.Marker {
+export function useGoogleMapMarker(): google.maps.OverlayView {
+
   const marker = useContext(GoogleMapMarkerContext);
 
   if (!marker) {
     throw new Error(
       "Could not find 'marker' in the context. " +
-        "Wrap the root component in an <Marker>.",
+      "Wrap the root component in an <Marker>.",
     );
   }
 
