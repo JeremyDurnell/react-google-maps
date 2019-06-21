@@ -20,9 +20,17 @@ Draws `google.maps.Marker`.
 
 <Playground>
   <DocsMap>
-    <HTMLMarker 
-      position={{ lat: 36, lng: -122 }}
-    />
+
+
+    <HTMLMarker position={{ lat: 36, lng: -122 }} suppressHydrationWarning={true}>
+        <button suppressHydrationWarning={true} key={'hi'} style={{ backgroundColor: 'blue' }} onClick={() => console.log('blue')}>$122</button>
+    </HTMLMarker>
+
+    <HTMLMarker position={{ lat: 37, lng: -123 }} suppressHydrationWarning={true}>
+        <button suppressHydrationWarning={true} key={'hi'} style={{ backgroundColor: 'red' }} onClick={() => console.log('red')}>$122</button>
+    </HTMLMarker>
+
+
   </DocsMap>
 </Playground>
 

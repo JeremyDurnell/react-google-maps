@@ -1,22 +1,36 @@
 import React, { ReactElement, useEffect, useRef } from "react";
+import ReactDOM from 'react-dom';
+
+import { useDeepCompareMemo } from '../internal/useDeepCompareMemo';
+import { useMemoOnce } from "../internal/useMemoOnce";
+
+import ReactDOMServer from "react-dom/server";
+import { renderToStaticMarkup } from 'react-dom/server'
+
+
 
 import {
-  GoogleMapMarkerContext,
+  GoogleMapOverlayViewContext,
   useGoogleMap,
   useGoogleMapsAPI,
 } from "../context/GoogleMapsContext";
 
-import { createLatLng } from "../internal/MapsUtils";
-import { useChangedProps } from "../internal/useChangedProps";
-import { useEventHandlers } from "../internal/useEventHandlers";
-import { useMemoOnce } from "../internal/useMemoOnce";
-import { MarkerEvent } from "./MarkerEvent";
+// import { createLatLng } from "../internal/MapsUtils";
+// import { useChangedProps } from "../internal/useChangedProps";
+// import { useEventHandlers } from "../internal/useEventHandlers";
+// import { useMemoOnce } from "../internal/useMemoOnce";
+// import { MarkerEvent } from "./MarkerEvent";
 
 export interface HTMLMarkerProps {
   /**
    * Marker position.
    */
   position: google.maps.LatLngLiteral;
+
+  /**
+   * React Element passed to the overlay.
+   */
+  children: React.ReactElement<object>;
 
   /**
    * Rollover text.
@@ -144,6 +158,7 @@ export interface HTMLMarkerProps {
 
 export function HTMLMarker({
   position,
+  children,
   title,
   visible,
   clickable,
@@ -173,101 +188,85 @@ export function HTMLMarker({
   const map = useGoogleMap();
   const maps = useGoogleMapsAPI();
 
-
-
-
-  console.info('maps', maps);
-
-  const options: google.maps.MarkerOptions = {
-    title,
-    visible,
-    clickable,
-    draggable,
-    cursor,
-    label,
-    opacity,
-    optimized,
-    shape,
-    zIndex,
-
-    position: createLatLng(maps, position),
-    animation: animation && maps.Animation[animation],
-  };
-
-  // if (typeof icon === "string") {
-  //   options.icon = icon;
-  // }
+  const options = useDeepCompareMemo(() => ({ position }), [position]);
 
   // const changedOptions = useChangedProps(options);
-  const marker = useMemoOnce(() => new maps.OverlayView());
+  const overlay = useMemoOnce(() => new maps.OverlayView());
 
-  marker.onAdd = function () {
-    const div = document.createElement('DIV');
-    div.className = "arrow_box";
-    div.innerHTML = "<img id='testo' src='https://svgshare.com/i/8b5.svg' alt=''>";
-    const panes = this.getPanes();
-    panes.overlayImage.appendChild(div);
-    // console.info('panes', panes);
-  };
+  const [container] = React.useState<HTMLDivElement>(document.createElement('div'));
 
-  marker.draw = function () {
-    var overlayProjection = this.getProjection();
-    var position = overlayProjection.fromLatLngToDivPixel(new google.maps.LatLng(44.73532729516236, 14.806330871582077));
-    var panes = this.getPanes();
-    // console.info('paneszzz', panes);
-    panes.overlayImage.style.left = position.x + 'px';
-    panes.overlayImage.style.top = position.y - 30 + 'px';
-
-    console.info('panes.overlayImage.style.left', panes.overlayImage.style.left);
-
-  }
-
-
-
-  // console.info('marker', marker)
-  // const positionRef = useRef(marker.getPosition());
 
   useEffect(() => {
-    marker.setMap(map);
+    if (!maps) {
+      return;
+    }
+    overlay.onAdd = () => {
+      /** 
+      container.style.position = "absolute";
+      overlay.getPanes()[pane].appendChild(container);
+      */
 
-    return () => {
-      marker.setMap(null);
+
+      const targetDiv = document.createElement('div');
+
+
+      const element = ReactDOM.hydrate(children, targetDiv);
+      container.appendChild(element);
+
+      container.className = "overlay_wrapper";
+
+      const panes = overlay.getPanes();
+      panes.overlayImage.appendChild(container);
+
+
     };
-  }, []);
+    overlay.draw = () => {
 
-  // useEffect(() => {
-  //   if (changedOptions) {
-  //     marker.setOptions(changedOptions as google.maps.MarkerOptions);
-  //   }
-  // }, [changedOptions]);
+      /** 
+      const projection = overlay.getProjection();
+      const projectionLocation = projection.fromLatLngToDivPixel(
+        new google.maps.LatLng(options.position.lat, options.position.lng)
+      );
+      container.style.left = JSON.stringify(projectionLocation.x) + "px";
+      container.style.top = JSON.stringify(projectionLocation.y) + "px";
+      */
 
-  // useEventHandlers(marker, MarkerEvent, {
-  //   onClick,
-  //   onDoubleClick,
-  //   onRightClick,
-  //   onMouseOut,
-  //   onMouseOver,
-  //   onMouseDown,
-  //   onMouseUp,
-  //   onDrag,
-  //   onDragStart() {
-  //     positionRef.current = marker.getPosition();
+      const overlayProjection = overlay.getProjection();
+      // var position = overlayProjection.fromLatLngToDivPixel(new google.maps.LatLng(44.73532729516236, 14.806330871582077));
 
-  //     if (onDragStart) {
-  //       onDragStart();
-  //     }
-  //   },
-  //   onDragEnd() {
-  //     marker.setPosition(positionRef.current);
+      const projectionLocation = overlayProjection.fromLatLngToDivPixel(
+        new google.maps.LatLng(options.position.lat, options.position.lng)
+      );
 
-  //     if (onDragEnd) {
-  //       onDragEnd();
-  //     }
-  //   },
-  //   onPositionChanged,
-  // });
+      const panes = overlay.getPanes();
+      // console.info('paneszzz', panes);
+      panes.overlayImage.style.left = projectionLocation.x + 'px';
+      panes.overlayImage.style.top = projectionLocation.y - 30 + 'px';
+
+    };
+    overlay.onRemove = () => {
+
+      // container.parentNode && container.parentNode.removeChild(container);
+    };
+
+    // overlay.setMap(map);
+  }, [map]);
+
+
+  useEffect(() => {
+    overlay.setMap(map);
+    return () => {
+      overlay.setMap(null);
+    };
+  });
+
+
+
+
+
+
 
   return (
-    <GoogleMapMarkerContext.Provider value={marker} />
+    <GoogleMapOverlayViewContext.Provider value={overlay} />
   );
 }
