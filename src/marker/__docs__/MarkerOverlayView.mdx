@@ -1,0 +1,32 @@
+---
+menu: Basic
+name: MarkerOverlayView
+route: /basic/markeroverlayview
+---
+
+import { Playground, PropsTable } from "docz";
+
+import { MarkerOverlayView } from "../MarkerOverlayView";
+import { DocsMap } from "../../__docs__/DocsComponents";
+
+# MarkerOverlayView
+
+Draws `google.maps.Marker`.
+
+**Google Maps Docs:**
+
+- [google.maps.Marker](https://developers.google.com/maps/documentation/javascript/reference#Marker)
+- [google.maps.MarkerOptions](https://developers.google.com/maps/documentation/javascript/reference#MarkerOptions)
+
+<Playground>
+  <DocsMap>
+    <MarkerOverlayView position={{ lat: 36, lng: -121.3 }} >
+        <button key={'blue'} style={{ color: 'blue' }} onClick={() => console.info('blue')}>$100</button>
+    </MarkerOverlayView>
+    <MarkerOverlayView position={{ lat: 36, lng: -121 }}>
+        <button key={'red'} style={{ color: 'red' }} onClick={() => console.info('red')}>$200</button>
+    </MarkerOverlayView>
+  </DocsMap>
+</Playground>
+
+<PropsTable of={MarkerOverlayView} />

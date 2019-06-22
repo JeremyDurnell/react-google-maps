@@ -60,7 +60,7 @@ export function useGoogleMapOverlayView(): google.maps.OverlayView {
   if (!overlayView) {
     throw new Error(
       "Could not find 'overlayView' in the context. " +
-      "Wrap the root component in an <Marker>.",
+      "Wrap the root component in an <MarkerOverlayView>.",
     );
   }
 
