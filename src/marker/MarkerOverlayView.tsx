@@ -11,7 +11,7 @@ import {
   useGoogleMapsAPI,
 } from "../context/GoogleMapsContext";
 
-export interface HTMLMarkerProps {
+export interface MarkerOverlayViewProps {
   /**
    * MarkerOverlayView position.
    */
@@ -29,7 +29,7 @@ export interface HTMLMarkerProps {
   pane: keyof google.maps.MapPanes;
 }
 
-export function MarkerOverlayView({ position, children, pane = 'overlayMouseTarget' }: HTMLMarkerProps): null | ReactElement<object> {
+export function MarkerOverlayView({ position, children, pane = 'overlayMouseTarget' }: MarkerOverlayViewProps): null | ReactElement<object> {
 
   /**
    * Instantiate Google Map, and the Google Maps API.
