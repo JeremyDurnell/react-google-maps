@@ -101,7 +101,6 @@ export function MarkerOverlayView({ position, children, pane = 'overlayMouseTarg
        * Returns the current Projection. [Canvas]
        */
       const overlayViewProjection = overlayView.getProjection();
-      console.info('overlayViewProjection => ', overlayViewProjection);
 
       /**
        * Computes the pixel coordinates of the given geographical location 
