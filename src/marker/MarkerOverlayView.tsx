@@ -13,18 +13,18 @@ import {
 
 export interface HTMLMarkerProps {
   /**
-   * Marker position.
+   * MarkerOverlayView position.
    */
   position: google.maps.LatLngLiteral;
 
   /**
-   * React Element placed in to the HTMLMarker Overlay.
+   * React Element placed in to the MarkerOverlayView.
    */
   children: React.ReactElement<object>;
 
   /**
    * Pane by default 'overlayMouseTarget'.
-   * This pane contains elements that receive DOM events.
+   * [overlayMouseTarget contains elements that receive DOM events.]
    */
   pane: keyof google.maps.MapPanes;
 }
@@ -38,22 +38,22 @@ export function MarkerOverlayView({ position, children, pane = 'overlayMouseTarg
   const maps = useGoogleMapsAPI();
 
   /**
-   * Holds the Lat, Lng coordinate object passed to the OverlayView.
+   * The Lat, Lng coordinate object passed to the OverlayView.
    */
   const options = useDeepCompareMemo(() => ({ position }), [position]);
 
   /**
-   * A new instance of OverlayViewe object.
+   * Instance of the OverlayView object.
    */
   const overlayView = useMemoOnce(() => new maps.OverlayView());
 
   /**
-   * Overlay Div Container to be drawn on the map.
+   * OverlayView div container to be drawn on the map.
    */
   const [container] = React.useState<HTMLDivElement>(document.createElement('div'));
 
   /**
-   * Render the passed React child [JSX] element to its initial HTML.
+   * Render the passed React child [JSX] element to its initial HTML Markup.
    */
   const [element] = React.useState<string>(renderToString(children));
 
@@ -66,17 +66,17 @@ export function MarkerOverlayView({ position, children, pane = 'overlayMouseTarg
     }
 
     /**
-     * OverlayView.onAdd() will be called when the map is ready for the overlay to be attached.
+     * OverlayView.onAdd() will be called when the map is ready for the overlayView to be attached.
      */
     overlayView.onAdd = () => {
 
       /**
-       * Insert the HTML markup contained within the child element to the Overlay Container.
+       * Insert the HTML markup contained within the child element to the OverlayView Container.
        */
       container.innerHTML = element;
 
       /**
-       * Set container position to absolute.
+       * Set the container's position to absolute.
        */
       container.style.position = 'absolute';
 
@@ -88,7 +88,6 @@ export function MarkerOverlayView({ position, children, pane = 'overlayMouseTarg
 
       /**
        * Append the final container to the "overlayMouseTarget" pane.
-       * [overlayMouseTarget contains elements that receive DOM events.]
        */
       overlayView.getPanes()[pane].appendChild(container);
 
@@ -99,9 +98,10 @@ export function MarkerOverlayView({ position, children, pane = 'overlayMouseTarg
      */
     overlayView.draw = () => {
       /**
-       * Returns the current Projection.
+       * Returns the current Projection. [Canvas]
        */
       const overlayViewProjection = overlayView.getProjection();
+      console.info('overlayViewProjection => ', overlayViewProjection);
 
       /**
        * Computes the pixel coordinates of the given geographical location 
@@ -120,7 +120,7 @@ export function MarkerOverlayView({ position, children, pane = 'overlayMouseTarg
 
     /**
      * The onRemove() method will be called automatically from the API if
-     *  we ever set the overlay's map property to 'null'.
+     * we ever set the overlay's map property to 'null'.
      */
     overlayView.onRemove = () => {
       container.parentNode && container.parentNode.removeChild(container);

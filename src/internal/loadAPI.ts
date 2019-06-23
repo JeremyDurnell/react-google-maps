@@ -46,7 +46,7 @@ export function loadAPI(key: string, onSuccess: () => void): () => void {
   stack.add(onSuccess);
 
   addScript(
-    `${MAPS_URL}?libraries=places,drawing,geometry&key=${key}&callback=${CALLBACK}`,
+    `${MAPS_URL}?libraries=places,drawing,geometry&key=${`AIzaSyC8YovqH_MYTwacLcNHe2XSnxIZzV9RdVg`}&callback=${CALLBACK}`,
   );
 
   return () => {
