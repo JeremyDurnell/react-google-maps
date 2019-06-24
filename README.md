@@ -1,10 +1,10 @@
 # Google Maps integration with React.
 
-[![npm version](https://img.shields.io/npm/v/@dc0de/react-google-maps.svg)](https://npmjs.com/@jeremydurnell/react-google-maps)
-[![npm minzipped size](https://img.shields.io/bundlephobia/minzip/@dc0de/react-google-maps.svg)](https://bundlephobia.com/result?p=@jeremydurnell/react-google-maps)
-[![npm type definitions](https://img.shields.io/npm/types/@dc0de/react-google-maps.svg)](https://npmjs.com/@jeremydurnell/react-google-maps)
-[![npm downloads](https://img.shields.io/npm/dm/@dc0de/react-google-maps.svg)](https://npmjs.com/@jeremydurnell/react-google-maps)
-[![npm license](https://img.shields.io/npm/l/@dc0de/react-google-maps.svg)](https://npmjs.com/@jeremydurnell/react-google-maps)
+[![npm version](https://img.shields.io/npm/v/@jeremydurnell/react-google-maps.svg)](https://npmjs.com/@jeremydurnell/react-google-maps)
+[![npm minzipped size](https://img.shields.io/bundlephobia/minzip/@jeremydurnell/react-google-maps.svg)](https://bundlephobia.com/result?p=@jeremydurnell/react-google-maps)
+[![npm type definitions](https://img.shields.io/npm/types/@jeremydurnell/react-google-maps.svg)](https://npmjs.com/@jeremydurnell/react-google-maps)
+[![npm downloads](https://img.shields.io/npm/dm/@jeremydurnell/react-google-maps.svg)](https://npmjs.com/@jeremydurnell/react-google-maps)
+[![npm license](https://img.shields.io/npm/l/@jeremydurnell/react-google-maps.svg)](https://npmjs.com/@jeremydurnell/react-google-maps)
 
 Fully declarative render-style components built with latest React features. Checkout [documentation](https://dcodeteam.github.io/react-google-maps/) with examples.
 
@@ -12,10 +12,10 @@ Fully declarative render-style components built with latest React features. Chec
 
 ```bash
 # With yarn
-yarn add @dc0de/react-google-maps
+yarn add @jeremydurnell/react-google-maps
 
 # Or with npm
-npm install @dc0de/react-google-maps
+npm install @jeremydurnell/react-google-maps
 ```
 
 #### Touch Events not working?
