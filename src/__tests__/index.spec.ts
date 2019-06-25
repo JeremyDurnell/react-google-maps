@@ -6,6 +6,7 @@ it("exposes public api", () => {
       GoogleMapContext: expect.any(Object),
       GoogleMapsAPIContext: expect.any(Object),
       GoogleMapMarkerContext: expect.any(Object),
+      GoogleMapOverlayViewContext: expect.any(Object),
     },
     `
 Object {
@@ -16,6 +17,7 @@ Object {
   "FullscreenControl": [Function],
   "GoogleMapContext": Any<Object>,
   "GoogleMapMarkerContext": Any<Object>,
+  "GoogleMapOverlayViewContext": Any<Object>,
   "GoogleMapsAPIContext": Any<Object>,
   "InfoWindow": [Function],
   "Map": [Function],
@@ -33,6 +35,7 @@ Object {
   "ZoomControl": [Function],
   "useGoogleMap": [Function],
   "useGoogleMapMarker": [Function],
+  "useGoogleMapOverlayView": [Function],
   "useGoogleMapsAPI": [Function],
   "useGoogleMapsLoader": [Function],
 }

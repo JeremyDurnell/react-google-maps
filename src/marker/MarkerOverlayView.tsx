@@ -1,6 +1,5 @@
 import React, { ReactElement, useEffect } from "react";
-import { hydrate } from 'react-dom';
-import { renderToString } from 'react-dom/server'
+import { createPortal } from 'react-dom';
 
 import { useDeepCompareMemo } from '../internal/useDeepCompareMemo';
 import { useMemoOnce } from "../internal/useMemoOnce";
@@ -53,11 +52,6 @@ export function MarkerOverlayView({ position, children, pane = 'overlayMouseTarg
   const [container] = React.useState<HTMLDivElement>(document.createElement('div'));
 
   /**
-   * Render the passed React child [JSX] element to its initial HTML Markup.
-   */
-  const [element] = React.useState<string>(renderToString(children));
-
-  /**
    * Use Effect Hook.
    */
   useEffect(() => {
@@ -69,28 +63,15 @@ export function MarkerOverlayView({ position, children, pane = 'overlayMouseTarg
      * OverlayView.onAdd() will be called when the map is ready for the overlayView to be attached.
      */
     overlayView.onAdd = () => {
-
-      /**
-       * Insert the HTML markup contained within the child element to the OverlayView Container.
-       */
-      container.innerHTML = element;
-
       /**
        * Set the container's position to absolute.
        */
       container.style.position = 'absolute';
 
       /**
-       * Hydrate the container where the inserted HTML markup were rendered.
-       * React will attach event listeners to the existing markup.
-       */
-      hydrate(children, container);
-
-      /**
        * Append the final container to the "overlayMouseTarget" pane.
        */
       overlayView.getPanes()[pane].appendChild(container);
-
     };
 
     /**
@@ -132,6 +113,8 @@ export function MarkerOverlayView({ position, children, pane = 'overlayMouseTarg
   }, [map]);
 
   return (
-    <GoogleMapOverlayViewContext.Provider value={overlayView} />
+    <GoogleMapOverlayViewContext.Provider value={overlayView}>
+      {children ? createPortal(children, container) : null}
+    </GoogleMapOverlayViewContext.Provider>
   );
 }
