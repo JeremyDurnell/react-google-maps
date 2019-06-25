@@ -16,6 +16,24 @@ Object {
   "FullscreenControl": [Function],
   "GoogleMapContext": Any<Object>,
   "GoogleMapMarkerContext": Any<Object>,
+  "GoogleMapOverlayViewContext": Object {
+    "$$typeof": Symbol(react.context),
+    "Consumer": Object {
+      "$$typeof": Symbol(react.context),
+      "_calculateChangedBits": null,
+      "_context": [Circular],
+    },
+    "Provider": Object {
+      "$$typeof": Symbol(react.provider),
+      "_context": [Circular],
+    },
+    "_calculateChangedBits": null,
+    "_currentRenderer": null,
+    "_currentRenderer2": null,
+    "_currentValue": null,
+    "_currentValue2": null,
+    "_threadCount": 0,
+  },
   "GoogleMapsAPIContext": Any<Object>,
   "InfoWindow": [Function],
   "Map": [Function],
@@ -33,6 +51,7 @@ Object {
   "ZoomControl": [Function],
   "useGoogleMap": [Function],
   "useGoogleMapMarker": [Function],
+  "useGoogleMapOverlayView": [Function],
   "useGoogleMapsAPI": [Function],
   "useGoogleMapsLoader": [Function],
 }
