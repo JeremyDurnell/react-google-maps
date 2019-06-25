@@ -18,6 +18,7 @@ export * from "./info-window/InfoWindow";
 
 export * from "./marker/Marker";
 export * from "./marker/MarkerIcon";
+export * from "./marker/MarkerOverlayView";
 export * from "./marker/MarkerSymbol";
 
 export * from "./polyline/Polyline";
