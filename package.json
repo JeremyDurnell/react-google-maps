@@ -1,7 +1,7 @@
 {
   "private": false,
   "license": "MIT",
-  "version": "0.0.10",
+  "version": "0.0.11",
   "name": "@jeremydurnell/react-google-maps",
   "description": "Google Maps integration with React",
   "repository": "https://github.com/JeremyDurnell/react-google-maps.git",
