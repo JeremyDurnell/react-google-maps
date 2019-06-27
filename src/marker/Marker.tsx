@@ -5,7 +5,6 @@ import {
   useGoogleMap,
   useGoogleMapsAPI,
 } from "../context/GoogleMapsContext";
-
 import { createLatLng } from "../internal/MapsUtils";
 import { useChangedProps } from "../internal/useChangedProps";
 import { useEventHandlers } from "../internal/useEventHandlers";

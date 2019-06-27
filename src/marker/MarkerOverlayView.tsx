@@ -69,6 +69,12 @@ export function MarkerOverlayView({ position, children, pane = 'overlayMouseTarg
       container.style.position = 'absolute';
 
       /**
+        * Set the container's touchAction to pan-x pan-y.
+        * [Touch-action allows us to define which browser actions are allowed over an element.]
+        */
+      container.style.touchAction = 'pan-x pan-y';
+
+      /**
        * Append the final container to the "overlayMouseTarget" pane.
        */
       overlayView.getPanes()[pane].appendChild(container);
