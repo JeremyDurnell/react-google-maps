@@ -20,7 +20,7 @@ export function useGoogleMapsAPI(): typeof google.maps {
   if (!maps) {
     throw new Error(
       "Could not find 'maps' in the context. " +
-      "Wrap the root component in an <GoogleMapsAPIContext.Provider>.",
+        "Wrap the root component in an <GoogleMapsAPIContext.Provider>.",
     );
   }
 
@@ -33,7 +33,7 @@ export function useGoogleMap(): google.maps.Map {
   if (!map) {
     throw new Error(
       "Could not find 'map' in the context. " +
-      "Wrap the root component in an <Map>.",
+        "Wrap the root component in an <Map>.",
     );
   }
 
@@ -46,7 +46,7 @@ export function useGoogleMapMarker(): google.maps.Marker {
   if (!marker) {
     throw new Error(
       "Could not find 'marker' in the context. " +
-      "Wrap the root component in an <Marker>.",
+        "Wrap the root component in an <Marker>.",
     );
   }
 
@@ -54,13 +54,12 @@ export function useGoogleMapMarker(): google.maps.Marker {
 }
 
 export function useGoogleMapOverlayView(): google.maps.OverlayView {
-
   const overlayView = useContext(GoogleMapOverlayViewContext);
 
   if (!overlayView) {
     throw new Error(
       "Could not find 'overlayView' in the context. " +
-      "Wrap the root component in an <MarkerOverlayView>.",
+        "Wrap the root component in an <MarkerOverlayView>.",
     );
   }
 
