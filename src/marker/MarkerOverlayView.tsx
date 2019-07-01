@@ -1,6 +1,5 @@
 import React, { ReactElement, useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
-
 import { useDeepCompareMemo } from '../internal/useDeepCompareMemo';
 import { useMemoOnce } from '../internal/useMemoOnce';
 import {
@@ -11,7 +10,7 @@ import {
 
 export enum ContainerAttributes {
   STYLE = 'position: absolute; touch-action: pan-x pan-y; transform: translateX(-50%) translateY(-100%);'
-}
+};
 
 export interface Attributes {
   [key: string]: string;
@@ -32,7 +31,7 @@ export interface MarkerOverlayViewProps {
    * Optional Pane by default 'floatPane'.
    * [overlayMouseTarget contains elements that receive DOM events.]
    */
-  pane: keyof google.maps.MapPanes;
+  pane?: keyof google.maps.MapPanes;
 }
 
 export function MarkerOverlayView({ position, children, pane = 'floatPane' }: MarkerOverlayViewProps): null | ReactElement<object> {
@@ -86,17 +85,6 @@ export function MarkerOverlayView({ position, children, pane = 'floatPane' }: Ma
      * OverlayView.onAdd() will be called when the map is ready for the overlayView to be attached.
      */
     overlayView.onAdd = () => {
-      /**
-       * Append the overlayViewContainerto the 'overlayMouseTarget' pane.
-       */
-      overlayViewContainer.style.position = 'absolute';
-
-      /**
-        * Set the container's touchAction to pan-x pan-y.
-        * [Touch-action allows us to define which browser actions are allowed over an element.]
-        */
-      overlayViewContainer.style.touchAction = 'pan-x pan-y';
-
       /**
        * Append the final container to the "overlayMouseTarget" pane.
        */
