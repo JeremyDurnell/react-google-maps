@@ -1,21 +1,23 @@
 import React, { ReactElement, useEffect, useState } from "react";
-import { createPortal } from 'react-dom';
-import { useDeepCompareMemo } from '../internal/useDeepCompareMemo';
-import { useMemoOnce } from "../internal/useMemoOnce";
+import { createPortal } from "react-dom";
+
 import {
   GoogleMapOverlayViewContext,
   useGoogleMap,
   useGoogleMapsAPI,
 } from "../context/GoogleMapsContext";
+import { useDeepCompareMemo } from "../internal/useDeepCompareMemo";
+import { useMemoOnce } from "../internal/useMemoOnce";
+import { MapEnums } from "../map/Map";
 
 export enum ContainerAttributes {
-  ID = 'infoWindow',
-  STYLE = 'position: absolute; touch-action: pan-x pan-y;'
+  CLASSNAME = "marker-overlay-view",
+  STYLE = "position: absolute; touch-action: pan-x pan-y;",
 }
 
 export interface Attributes {
   [key: string]: string;
-};
+}
 
 export interface MarkerOverlayViewProps {
   /**
@@ -29,19 +31,17 @@ export interface MarkerOverlayViewProps {
   children: React.ReactElement<object>;
 
   /**
-   * Optinal React Element placed in to the MarkerOverlayView.
-   */
-  infoWindow?: React.ReactElement<object> | null;
-
-  /**
-   * Optional Pane by default 'overlayMouseTarget'.
+   * Optional Pane by default 'floatPane'.
    * [overlayMouseTarget contains elements that receive DOM events.]
    */
   pane?: keyof google.maps.MapPanes;
 }
 
-export function MarkerOverlayView({ position, children, infoWindow = null, pane = 'overlayMouseTarget' }: MarkerOverlayViewProps): null | ReactElement<object> {
-
+export function MarkerOverlayView({
+  position,
+  children,
+  pane = "overlayMouseTarget",
+}: MarkerOverlayViewProps): null | ReactElement<object> {
   /**
    * Instantiate Google Map, and the Google Maps API.
    */
@@ -52,12 +52,15 @@ export function MarkerOverlayView({ position, children, infoWindow = null, pane 
    * Div container generator.
    */
   const generateDivContainer = (attributes: Attributes): HTMLDivElement => {
-    const divElement = document.createElement('div');
+    const divElement = document.createElement("div");
+
     Object.entries(attributes).forEach(entry => {
       const key = entry[0];
       const value = entry[1];
+
       divElement.setAttribute(key, value);
     });
+
     return divElement;
   };
 
@@ -74,49 +77,82 @@ export function MarkerOverlayView({ position, children, infoWindow = null, pane 
   /**
    * OverlayView div container to be drawn on the map.
    */
-  const [overlayViewContainer] = useState<HTMLDivElement>(generateDivContainer({ style: ContainerAttributes.STYLE }));
+  const [overlayViewContainer] = useState<HTMLDivElement>(
+    generateDivContainer({
+      class: ContainerAttributes.CLASSNAME,
+      style: ContainerAttributes.STYLE,
+    }),
+  );
 
   /**
-   * infoWindowContainer div container to be drawn above the overlayView.
+   * Map container to be used for click events.
+   * [Map Container's id has been set to 'map_canvas'].
    */
-  const [infoWindowContainer] = useState<HTMLDivElement>(generateDivContainer({ style: ContainerAttributes.STYLE, id: ContainerAttributes.ID }));
+  const mapContainer = document.getElementById(MapEnums.ID) as Element;
 
   /**
-   * Removes the info window from the DOM. Assigned to mouseleave.
+   * Use Effect Hook for Google Maps OverlayView API events.
    */
-  function hideInfoWindow(event: MouseEvent): void {
-    const { parentNode } = overlayViewContainer;
-    const overlayMouseTarget = (event.relatedTarget as Element).parentNode || (event.toElement as Element).parentNode;
-    const InfoWindowNode = (overlayMouseTarget as Element).id === ContainerAttributes.ID;
-    if (parentNode && !InfoWindowNode) {
-      parentNode.contains(infoWindowContainer) && parentNode.removeChild(infoWindowContainer);
+  function mapContainerClickListener(event: MouseEvent): void {
+    const pointerTarget =
+      (event.target as Element) ||
+      (event.relatedTarget as Element) ||
+      (event.toElement as Element);
+
+    if (!overlayViewContainer.contains(pointerTarget)) {
+      if (overlayViewContainer.classList.contains("selected")) {
+        overlayViewContainer.classList.remove("selected");
+      }
     }
-  };
+  }
 
   /**
-   * Appends the info window to the DOM. Assigned to mouseenter.
+   * Adds 'selected' class to the overlayViewContainer when clicked.
+   * ['selected' will always be applied before 'active'].
    */
-  function showInfoWindow(event: MouseEvent): void {
-    const parentNode = event && overlayViewContainer.parentNode;
-    if (parentNode) {
-      parentNode.appendChild(infoWindowContainer);
+  function mouseDown(): void {
+    const selected = overlayViewContainer.classList.contains("selected");
+    const active = overlayViewContainer.classList.contains("active");
+
+    if (selected && active) {
+      return;
     }
-  };
+    if (!selected && !active) {
+      overlayViewContainer.classList.add("selected");
+    } else if (active) {
+      overlayViewContainer.classList.replace("active", "selected");
+      overlayViewContainer.classList.add("active");
+    }
+  }
 
   /**
-   * Use Effect Hook for the containers' events.
+   * Adds/Removes 'active' class to the overlayViewContainer when hovered/unhovered.
+   */
+  function activeClassToggle(): void {
+    overlayViewContainer.classList.toggle("active");
+  }
+
+  /**
+   * Use Effect Hook for Google Maps OverlayView API events.
    */
   useEffect(() => {
-    overlayViewContainer.addEventListener("mouseenter", showInfoWindow);
-    overlayViewContainer.addEventListener("mouseleave", hideInfoWindow);
-    infoWindowContainer.addEventListener("mouseleave", hideInfoWindow);
+    const handler = maps.event.addDomListener(
+      mapContainer,
+      "click",
+      mapContainerClickListener,
+    );
+
+    overlayViewContainer.addEventListener("mouseenter", activeClassToggle);
+    overlayViewContainer.addEventListener("mouseleave", activeClassToggle);
+    overlayViewContainer.addEventListener("mousedown", mouseDown);
 
     return () => {
-      overlayViewContainer.removeEventListener("mouseenter", showInfoWindow);
-      overlayViewContainer.removeEventListener("mouseleave", hideInfoWindow);
-      infoWindowContainer.removeEventListener("mouseleave", hideInfoWindow);
+      handler.remove();
+      overlayViewContainer.addEventListener("mouseenter", activeClassToggle);
+      overlayViewContainer.addEventListener("mouseleave", activeClassToggle);
+      overlayViewContainer.addEventListener("mousedown", mouseDown);
     };
-  }, [infoWindowContainer, overlayViewContainer]);
+  }, [overlayViewContainer]);
 
   /**
    * Use Effect Hook for Google Maps OverlayView API events.
@@ -131,7 +167,7 @@ export function MarkerOverlayView({ position, children, infoWindow = null, pane 
      */
     overlayView.onAdd = () => {
       /**
-       * Append the overlayViewContainerto the "overlayMouseTarget" pane.
+       * Append the final container to the "overlayMouseTarget" pane.
        */
       overlayView.getPanes()[pane].appendChild(overlayViewContainer);
     };
@@ -146,24 +182,18 @@ export function MarkerOverlayView({ position, children, infoWindow = null, pane 
       const overlayViewProjection = overlayView.getProjection();
 
       /**
-       * Computes the pixel coordinates of the given geographical location 
+       * Computes the pixel coordinates of the given geographical location
        * in the DOM element that holds the draggable map.
        */
       const projectionLocation = overlayViewProjection.fromLatLngToDivPixel(
-        new google.maps.LatLng(options.position.lat, options.position.lng)
+        new google.maps.LatLng(options.position.lat, options.position.lng),
       );
-
-      /**
-       * Set top and left styles of the absolutely positioned infoWindowContainer to the computed coordinates.
-       */
-      infoWindowContainer.style.left = projectionLocation.x.toString() + 'px';
-      infoWindowContainer.style.top = projectionLocation.y.toString() + 'px';
 
       /**
        * Set top and left styles of the absolutely positioned overlayViewContainer to the computed coordinates.
        */
-      overlayViewContainer.style.left = projectionLocation.x.toString() + 'px';
-      overlayViewContainer.style.top = projectionLocation.y.toString() + 'px';
+      overlayViewContainer.style.left = `${projectionLocation.x.toString()}px`;
+      overlayViewContainer.style.top = `${projectionLocation.y.toString()}px`;
     };
 
     /**
@@ -171,7 +201,9 @@ export function MarkerOverlayView({ position, children, infoWindow = null, pane 
      * we ever set the overlay's map property to 'null'.
      */
     overlayView.onRemove = () => {
-      overlayViewContainer.parentNode && overlayViewContainer.parentNode.removeChild(overlayViewContainer);
+      if (overlayViewContainer.parentNode) {
+        overlayViewContainer.parentNode.removeChild(overlayViewContainer);
+      }
     };
 
     /**
@@ -183,7 +215,6 @@ export function MarkerOverlayView({ position, children, infoWindow = null, pane 
   return (
     <GoogleMapOverlayViewContext.Provider value={overlayView}>
       {children ? createPortal(children, overlayViewContainer) : null}
-      {infoWindow ? createPortal(infoWindow, infoWindowContainer) : null}
     </GoogleMapOverlayViewContext.Provider>
   );
 }
