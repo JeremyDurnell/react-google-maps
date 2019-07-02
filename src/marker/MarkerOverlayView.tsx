@@ -1,20 +1,23 @@
-import React, { ReactElement, useEffect, useState } from 'react';
-import { createPortal } from 'react-dom';
-import { useDeepCompareMemo } from '../internal/useDeepCompareMemo';
-import { useMemoOnce } from '../internal/useMemoOnce';
+import React, { ReactElement, useEffect, useState } from "react";
+import { createPortal } from "react-dom";
+
 import {
   GoogleMapOverlayViewContext,
   useGoogleMap,
   useGoogleMapsAPI,
-} from '../context/GoogleMapsContext';
+} from "../context/GoogleMapsContext";
+import { useDeepCompareMemo } from "../internal/useDeepCompareMemo";
+import { useMemoOnce } from "../internal/useMemoOnce";
+import { MapEnums } from "../map/Map";
 
 export enum ContainerAttributes {
-  STYLE = 'position: absolute; touch-action: pan-x pan-y; transform: translateX(-50%) translateY(-100%);'
-};
+  CLASSNAME = "marker-overlay-view",
+  STYLE = "position: absolute; touch-action: pan-x pan-y;",
+}
 
 export interface Attributes {
   [key: string]: string;
-};
+}
 
 export interface MarkerOverlayViewProps {
   /**
@@ -34,8 +37,11 @@ export interface MarkerOverlayViewProps {
   pane?: keyof google.maps.MapPanes;
 }
 
-export function MarkerOverlayView({ position, children, pane = 'floatPane' }: MarkerOverlayViewProps): null | ReactElement<object> {
-
+export function MarkerOverlayView({
+  position,
+  children,
+  pane = "overlayMouseTarget",
+}: MarkerOverlayViewProps): null | ReactElement<object> {
   /**
    * Instantiate Google Map, and the Google Maps API.
    */
@@ -46,7 +52,7 @@ export function MarkerOverlayView({ position, children, pane = 'floatPane' }: Ma
    * Div container generator.
    */
   const generateDivContainer = (attributes: Attributes): HTMLDivElement => {
-    const divElement = document.createElement('div');
+    const divElement = document.createElement("div");
 
     Object.entries(attributes).forEach(entry => {
       const key = entry[0];
@@ -71,7 +77,82 @@ export function MarkerOverlayView({ position, children, pane = 'floatPane' }: Ma
   /**
    * OverlayView div container to be drawn on the map.
    */
-  const [overlayViewContainer] = useState<HTMLDivElement>(generateDivContainer({ style: ContainerAttributes.STYLE }));
+  const [overlayViewContainer] = useState<HTMLDivElement>(
+    generateDivContainer({
+      class: ContainerAttributes.CLASSNAME,
+      style: ContainerAttributes.STYLE,
+    }),
+  );
+
+  /**
+   * Map container to be used for click events.
+   * [Map Container's id has been set to 'map_canvas'].
+   */
+  const mapContainer = document.getElementById(MapEnums.ID) as Element;
+
+  /**
+   * Use Effect Hook for Google Maps OverlayView API events.
+   */
+  function mapContainerClickListener(event: MouseEvent): void {
+    const pointerTarget =
+      (event.target as Element) ||
+      (event.relatedTarget as Element) ||
+      (event.toElement as Element);
+
+    if (!overlayViewContainer.contains(pointerTarget)) {
+      if (overlayViewContainer.classList.contains("selected")) {
+        overlayViewContainer.classList.remove("selected");
+      }
+    }
+  }
+
+  /**
+   * Adds 'selected' class to the overlayViewContainer when clicked.
+   * ['selected' will always be applied before 'active'].
+   */
+  function mouseDown(): void {
+    const selected = overlayViewContainer.classList.contains("selected");
+    const active = overlayViewContainer.classList.contains("active");
+
+    if (selected && active) {
+      return;
+    }
+    if (!selected && !active) {
+      overlayViewContainer.classList.add("selected");
+    } else if (active) {
+      overlayViewContainer.classList.replace("active", "selected");
+      overlayViewContainer.classList.add("active");
+    }
+  }
+
+  /**
+   * Adds/Removes 'active' class to the overlayViewContainer when hovered/unhovered.
+   */
+  function activeClassToggle(): void {
+    overlayViewContainer.classList.toggle("active");
+  }
+
+  /**
+   * Use Effect Hook for Google Maps OverlayView API events.
+   */
+  useEffect(() => {
+    const handler = maps.event.addDomListener(
+      mapContainer,
+      "click",
+      mapContainerClickListener,
+    );
+
+    overlayViewContainer.addEventListener("mouseenter", activeClassToggle);
+    overlayViewContainer.addEventListener("mouseleave", activeClassToggle);
+    overlayViewContainer.addEventListener("mousedown", mouseDown);
+
+    return () => {
+      handler.remove();
+      overlayViewContainer.addEventListener("mouseenter", activeClassToggle);
+      overlayViewContainer.addEventListener("mouseleave", activeClassToggle);
+      overlayViewContainer.addEventListener("mousedown", mouseDown);
+    };
+  }, [overlayViewContainer]);
 
   /**
    * Use Effect Hook for Google Maps OverlayView API events.
@@ -101,18 +182,18 @@ export function MarkerOverlayView({ position, children, pane = 'floatPane' }: Ma
       const overlayViewProjection = overlayView.getProjection();
 
       /**
-       * Computes the pixel coordinates of the given geographical location 
+       * Computes the pixel coordinates of the given geographical location
        * in the DOM element that holds the draggable map.
        */
       const projectionLocation = overlayViewProjection.fromLatLngToDivPixel(
-        new google.maps.LatLng(options.position.lat, options.position.lng)
+        new google.maps.LatLng(options.position.lat, options.position.lng),
       );
 
       /**
        * Set top and left styles of the absolutely positioned overlayViewContainer to the computed coordinates.
        */
-      overlayViewContainer.style.left = projectionLocation.x.toString() + 'px';
-      overlayViewContainer.style.top = projectionLocation.y.toString() + 'px';
+      overlayViewContainer.style.left = `${projectionLocation.x.toString()}px`;
+      overlayViewContainer.style.top = `${projectionLocation.y.toString()}px`;
     };
 
     /**
@@ -120,7 +201,9 @@ export function MarkerOverlayView({ position, children, pane = 'floatPane' }: Ma
      * we ever set the overlay's map property to 'null'.
      */
     overlayView.onRemove = () => {
-      overlayViewContainer.parentNode && overlayViewContainer.parentNode.removeChild(overlayViewContainer);
+      if (overlayViewContainer.parentNode) {
+        overlayViewContainer.parentNode.removeChild(overlayViewContainer);
+      }
     };
 
     /**

@@ -10,6 +10,10 @@ import { useDeepCompareMemo } from "../internal/useDeepCompareMemo";
 import { useEventHandlers } from "../internal/useEventHandlers";
 import { MapEvent } from "./MapEvent";
 
+export enum MapEnums {
+  ID = "map_canvas",
+}
+
 export interface MapProps {
   /**
    * The initial Map `center`.
@@ -312,7 +316,7 @@ export function Map({
 
   return (
     <>
-      <div ref={node} style={style} className={className} />
+      <div ref={node} id={MapEnums.ID} style={style} className={className} />
 
       {map != null && (
         <GoogleMapContext.Provider value={map}>

@@ -19,12 +19,12 @@ Draws `google.maps.Marker`.
 - [google.maps.MarkerOptions](https://developers.google.com/maps/documentation/javascript/reference#MarkerOptions)
 
 <Playground>
-  <DocsMap id="map_canvas">
+  <DocsMap>
     <MarkerOverlayView position={{ lat: 36, lng: -121.3 }}>
       <button
         key={"blue"}
         style={{ color: "blue" }}
-        onClick={() => console.info("blue")}
+        onClick={() => console.info("button blue click")}
       >
         $100
       </button>
@@ -33,7 +33,7 @@ Draws `google.maps.Marker`.
       <button
         key={"red"}
         style={{ color: "red" }}
-        onClick={() => console.info("red")}
+        onClick={() => console.info("button red click")}
       >
         $200
       </button>
