@@ -10,6 +10,10 @@ it("exposes public api", () => {
     },
     `
 Object {
+  "ContainerAttributes": Object {
+    "CLASSNAME": "marker-overlay-view",
+    "STYLE": "position: absolute; touch-action: pan-x pan-y;",
+  },
   "CustomControl": [Function],
   "DataPolygon": [Function],
   "DrawingControl": [Function],
@@ -21,9 +25,13 @@ Object {
   "GoogleMapsAPIContext": Any<Object>,
   "InfoWindow": [Function],
   "Map": [Function],
+  "MapEnums": Object {
+    "ID": "map_canvas",
+  },
   "MapTypeControl": [Function],
   "Marker": [Function],
   "MarkerIcon": [Function],
+  "MarkerOverlayView": [Function],
   "MarkerSymbol": [Function],
   "PanBy": [Function],
   "PanTo": [Function],
