@@ -79,7 +79,9 @@ it("renders div elements and passes classes or styles to it", () => {
 
   expect(container).toMatchInlineSnapshot(`
 <div>
-  <div />
+  <div
+    id="map_canvas"
+  />
 </div>
 `);
 
@@ -88,6 +90,7 @@ it("renders div elements and passes classes or styles to it", () => {
   expect(container).toMatchInlineSnapshot(`
 <div>
   <div
+    id="map_canvas"
     style="display: none;"
   />
 </div>
@@ -99,6 +102,7 @@ it("renders div elements and passes classes or styles to it", () => {
 <div>
   <div
     class="hide"
+    id="map_canvas"
     style=""
   />
 </div>

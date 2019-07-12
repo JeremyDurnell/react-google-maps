@@ -133,10 +133,10 @@ export function MarkerOverlayView({
   }
 
   /**
-   * Use Effect Hook for Google Maps OverlayView API events.
+   * Use Effect Hook for Container events.
    */
   useEffect(() => {
-    const handler = maps.event.addDomListener(
+    const mapContainerClickHandler = maps.event.addDomListener(
       mapContainer,
       "click",
       mapContainerClickListener,
@@ -147,18 +147,18 @@ export function MarkerOverlayView({
     overlayViewContainer.addEventListener("mousedown", mouseDown);
 
     return () => {
-      handler.remove();
-      overlayViewContainer.addEventListener("mouseenter", activeClassToggle);
-      overlayViewContainer.addEventListener("mouseleave", activeClassToggle);
-      overlayViewContainer.addEventListener("mousedown", mouseDown);
+      maps.event.removeListener(mapContainerClickHandler);
+      overlayViewContainer.removeEventListener("mouseenter", activeClassToggle);
+      overlayViewContainer.removeEventListener("mouseleave", activeClassToggle);
+      overlayViewContainer.removeEventListener("mousedown", mouseDown);
     };
-  }, [overlayViewContainer]);
+  }, [overlayViewContainer, mapContainer, maps]);
 
   /**
    * Use Effect Hook for Google Maps OverlayView API events.
    */
   useEffect(() => {
-    if (!maps) {
+    if (!map) {
       return;
     }
 
@@ -210,6 +210,10 @@ export function MarkerOverlayView({
      * Explicitly call setMap on this overlay.
      */
     overlayView.setMap(map);
+
+    return () => {
+      overlayView.setMap(null);
+    };
   }, [map]);
 
   return (
