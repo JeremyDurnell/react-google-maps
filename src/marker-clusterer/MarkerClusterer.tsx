@@ -7,7 +7,7 @@ import {
 } from "../context/GoogleMapsContext";
 
 
-export interface MarkerOverlayViewProps {
+export interface MarkerClustererProps {
   /**
    * MarkerClusterer locations.
    */
@@ -21,7 +21,7 @@ export interface MarkerOverlayViewProps {
 export function MarkerClusterer({
   locations,
   options,
-}: MarkerOverlayViewProps): null | ReactElement<object> {
+}: MarkerClustererProps): null | ReactElement<object> {
   /**
    * Instantiate Google Map.
    */
