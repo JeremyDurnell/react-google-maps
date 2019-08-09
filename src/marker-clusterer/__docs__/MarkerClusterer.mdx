@@ -1,0 +1,70 @@
+---
+menu: Basic
+name: MarkerClusterer
+route: /basic/markerclusterer
+---
+
+import { Playground, PropsTable } from "docz";
+
+import { clustererMockData } from "../clustererMockData";
+import { MarkerClusterer } from "../../marker-clusterer/MarkerClusterer";
+import { DocsMap } from "../../__docs__/DocsComponents";
+
+# MarkerClusterer
+
+Draws `MarkerClusterer`.
+
+**Google Maps Docs:**
+
+- [marker-clustering google docs](https://developers.google.com/maps/documentation/javascript/marker-clustering)
+- [googlemaps/v3-utility-library/markerclustererplus/](https://github.com/googlemaps/v3-utility-library/tree/master/markerclustererplus)
+
+<Playground>
+  <DocsMap center={{ lat: 51.508411, lng: -0.125364 }}>
+    <MarkerClusterer
+      locations={clustererMockData}
+      options={{
+        styles: [
+          {
+            textColor: "#000",
+            url:
+              "https://cdn.rawgit.com/googlemaps/js-marker-clusterer/gh-pages/images/m1.png",
+            height: 53,
+            width: 53,
+          },
+          {
+            textColor: "#000",
+            url:
+              "https://cdn.rawgit.com/googlemaps/js-marker-clusterer/gh-pages/images/m2.png",
+            height: 56,
+            width: 56,
+          },
+          {
+            textColor: "#000",
+            url:
+              "https://cdn.rawgit.com/googlemaps/js-marker-clusterer/gh-pages/images/m3.png",
+            height: 66,
+            width: 66,
+          },
+          {
+            textColor: "#000",
+            url:
+              "https://cdn.rawgit.com/googlemaps/js-marker-clusterer/gh-pages/images/m4.png",
+            height: 78,
+            width: 78,
+          },
+          {
+            textColor: "#000",
+            url:
+              "https://cdn.rawgit.com/googlemaps/js-marker-clusterer/gh-pages/images/m5.png",
+            height: 90,
+            width: 90,
+          },
+        ],
+        minimumClusterSize: 1,
+      }}
+    />
+  </DocsMap>
+</Playground>
+
+<PropsTable of={MarkerClusterer} />
