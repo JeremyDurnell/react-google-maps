@@ -5,6 +5,9 @@
     // Do not compile code.
     "noEmit": true,
 
+    // Needed for markerclustererplus
+    "noImplicitAny": false,
+
     // Enable JSX.
     "jsx": "react",
 
@@ -24,5 +27,9 @@
     // Possible bug checks.
     "noFallthroughCasesInSwitch": true,
     "forceConsistentCasingInFileNames": true
-  }
+  },
+    "exclude": [
+        "node_modules"
+    ]
+
 }
