@@ -18,7 +18,7 @@
     "allowSyntheticDefaultImports": true,
 
     // Strict type checks.
-    "strict": true,
+    "strict": false,
 
     // Dead code checks.
     "noUnusedLocals": true,

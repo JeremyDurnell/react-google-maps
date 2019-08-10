@@ -30,6 +30,7 @@ Object {
   },
   "MapTypeControl": [Function],
   "Marker": [Function],
+  "MarkerClusterer": [Function],
   "MarkerIcon": [Function],
   "MarkerOverlayView": [Function],
   "MarkerSymbol": [Function],

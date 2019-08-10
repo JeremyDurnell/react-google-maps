@@ -3,7 +3,6 @@
 const babelPlugin = require("rollup-plugin-babel");
 const nodeResolvePlugin = require("rollup-plugin-node-resolve");
 const { sizeSnapshot } = require("rollup-plugin-size-snapshot");
-
 const pkg = require("./package");
 
 const externals = Object.keys(pkg.peerDependencies);

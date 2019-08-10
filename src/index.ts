@@ -20,6 +20,7 @@ export * from "./marker/Marker";
 export * from "./marker/MarkerIcon";
 export * from "./marker/MarkerOverlayView";
 export * from "./marker/MarkerSymbol";
+export * from "./marker-clusterer/MarkerClusterer";
 
 export * from "./polyline/Polyline";
 
