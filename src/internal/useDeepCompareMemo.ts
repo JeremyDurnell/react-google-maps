@@ -1,10 +1,10 @@
-import { InputIdentityList, useRef } from "react";
+import { useRef } from "react";
 
 import { isDeepEqual } from "./DataUtils";
 
 export function useDeepCompareMemo<T>(
   factory: () => T,
-  inputs: InputIdentityList,
+  inputs: any,
 ): T {
   const memoRef = useRef(factory());
   const inputsRef = useRef(inputs);

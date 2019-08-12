@@ -139,7 +139,7 @@ export function MarkerOverlayView({
     const mapContainerClickHandler = maps.event.addDomListener(
       mapContainer,
       "click",
-      mapContainerClickListener,
+      (mapContainerClickListener as EventListener),
     );
 
     overlayViewContainer.addEventListener("mouseenter", activeClassToggle);

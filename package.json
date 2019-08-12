@@ -1,7 +1,7 @@
 {
   "private": false,
   "license": "MIT",
-  "version": "0.0.17",
+  "version": "0.0.18",
   "name": "@jeremydurnell/react-google-maps",
   "description": "Google Maps integration with React",
   "repository": "https://github.com/JeremyDurnell/react-google-maps.git",
@@ -69,7 +69,7 @@
     "eslint-plugin-jsx-a11y": "^6.1.1",
     "eslint-plugin-node": "^8.0.0",
     "eslint-plugin-react": "^7.11.0",
-    "eslint-plugin-react-hooks": "^0.0.0",
+    "eslint-plugin-react-hooks": "^1.7.0",
     "import-sort": "^5.2.0",
     "import-sort-parser-typescript": "^5.0.0",
     "import-sort-style-module": "^5.0.0",
@@ -79,12 +79,12 @@
     "prettier": "^1.16.1",
     "react": "16.8.0-alpha.0",
     "react-dom": "16.8.0-alpha.0",
-    "react-testing-library": "^5.4.4",
+    "react-testing-library": "5.4.4",
     "rimraf": "^2.6.2",
     "rollup": "1.1.2",
     "rollup-plugin-babel": "^4.3.2",
     "rollup-plugin-node-resolve": "^4.0.0",
-    "rollup-plugin-size-snapshot": "^0.8.0",
+    "rollup-plugin-size-snapshot": "^0.9.0",
     "stylotron": "^0.0.13",
     "typescript": "~3.2.1"
   }

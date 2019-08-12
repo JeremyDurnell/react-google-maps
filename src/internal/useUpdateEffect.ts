@@ -1,8 +1,8 @@
-import { EffectCallback, InputIdentityList, useEffect, useRef } from "react";
+import { EffectCallback, useEffect, useRef } from "react";
 
 export function useUpdateEffect(
   fn: EffectCallback,
-  inputs: InputIdentityList,
+  inputs: any
 ): void {
   const mounted = useRef(false);
 

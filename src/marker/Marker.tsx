@@ -228,7 +228,10 @@ export function Marker({
       }
     },
     onDragEnd() {
-      marker.setPosition(positionRef.current);
+      if(positionRef.current){
+        marker.setPosition(positionRef.current);
+      }
+      
 
       if (onDragEnd) {
         onDragEnd();
