@@ -3,7 +3,7 @@ import { useEffect, useRef } from "react";
 export function useEventHandlers<
   TProps extends {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    [TKey in keyof TProps]: undefined | ((...args: Array<any>) => void)
+    [TKey in keyof TProps]: undefined | ((...args: Array<any>) => void);
   }
 >(
   instance: null | google.maps.MVCObject,
@@ -30,6 +30,8 @@ export function useEventHandlers<
         }),
     );
 
-    return () => listeners.map(x => x.remove());
+    return () => {
+      listeners.map(x => x.remove());
+    };
   }, [events, instance]);
 }
