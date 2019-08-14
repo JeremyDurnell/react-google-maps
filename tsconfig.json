@@ -29,7 +29,8 @@
     "forceConsistentCasingInFileNames": true
   },
     "exclude": [
-        "node_modules"
+        "node_modules",
+        "src/marker-clusterer/markerclustererplus.js"
     ]
 
 }

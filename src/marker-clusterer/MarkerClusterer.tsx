@@ -1,18 +1,17 @@
 import React, { ReactElement, useEffect } from "react";
-import * as MarkerClustererPlus from "@google/markerclustererplus";
+import { MarkerClustererPlus } from "./markerclustererplus.js";
 
 import {
   GoogleMapOverlayViewContext,
   useGoogleMap,
 } from "../context/GoogleMapsContext";
 
-
 export interface MarkerClustererProps {
   /**
    * MarkerClusterer locations.
    */
   locations: Array<google.maps.LatLngLiteral>;
- /**
+  /**
    * MarkerClusterer options.
    */
   options: MarkerClustererOptions;
@@ -28,7 +27,7 @@ export function MarkerClusterer({
   const map = useGoogleMap();
 
   useEffect(() => {
-    if (!map) {
+    if (!map && !locations) {
       return;
     }
     // Generate markers to be clustered.
@@ -39,8 +38,13 @@ export function MarkerClusterer({
     });
 
     // Add a marker clusterer to manage the markers.
-    new MarkerClustererPlus(map, markers, options);
-  }, [map]);
+    const markerClustererPlus = new MarkerClustererPlus(map, markers, options);
+
+    return () => {
+      // Clear markers on unmount.
+      markerClustererPlus.clearMarkers();
+    };
+  }, [map, locations]);
 
   return <GoogleMapOverlayViewContext.Provider value={null} />;
 }
