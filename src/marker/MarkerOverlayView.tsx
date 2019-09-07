@@ -21,6 +21,11 @@ export interface Attributes {
 
 export interface MarkerOverlayViewProps {
   /**
+   * OverlayView div container's optional id.
+   */
+  id?: string;
+
+  /**
    * MarkerOverlayView position.
    */
   position: google.maps.LatLngLiteral;
@@ -38,6 +43,7 @@ export interface MarkerOverlayViewProps {
 }
 
 export function MarkerOverlayView({
+  id = "",
   position,
   children,
   pane = "overlayMouseTarget",
@@ -55,10 +61,12 @@ export function MarkerOverlayView({
     const divElement = document.createElement("div");
 
     Object.entries(attributes).forEach(entry => {
-      const key = entry[0];
-      const value = entry[1];
-
-      divElement.setAttribute(key, value);
+      //Add it to container only when the value exist
+      if (entry[1]) {
+        const key = entry[0];
+        const value = entry[1];
+        divElement.setAttribute(key, value);
+      }
     });
 
     return divElement;
@@ -79,6 +87,7 @@ export function MarkerOverlayView({
    */
   const [overlayViewContainer] = useState<HTMLDivElement>(
     generateDivContainer({
+      id,
       class: ContainerAttributes.CLASSNAME,
       style: ContainerAttributes.STYLE,
     }),
@@ -139,7 +148,7 @@ export function MarkerOverlayView({
     const mapContainerClickHandler = maps.event.addDomListener(
       mapContainer,
       "click",
-      (mapContainerClickListener as EventListener),
+      mapContainerClickListener as EventListener,
     );
 
     overlayViewContainer.addEventListener("mouseenter", activeClassToggle);
