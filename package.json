@@ -1,11 +1,9 @@
 {
   "private": false,
   "license": "MIT",
-  "version": "0.0.22",
-  "name": "@jeremydurnell/react-google-maps",
+  "version": "0.0.21",
+  "name": "react-google-maps",
   "description": "Google Maps integration with React",
-  "repository": "https://github.com/JeremyDurnell/react-google-maps.git",
-  "author": "Umidbek Karimov <uma.karimov@gmail.com>",
   "engines": {
     "node": ">=8.3.0"
   },
