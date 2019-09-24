@@ -7,6 +7,7 @@ route: /basic/markeroverlayview
 import { Playground, PropsTable } from "docz";
 
 import { MarkerOverlayView } from "../MarkerOverlayView";
+import { ZoomControl } from "../../controls/ZoomControl";
 import { DocsMap } from "../../__docs__/DocsComponents";
 
 # MarkerOverlayView
@@ -20,24 +21,27 @@ Draws `google.maps.Marker`.
 
 <Playground>
   <DocsMap>
-    <MarkerOverlayView position={{ lat: 36, lng: -121.3 }}>
+    <MarkerOverlayView id={"blue"} position={{ lat: 36, lng: -121.3 }}>
       <button
         key={"blue"}
+        title={"Marker"}
         style={{ color: "blue" }}
         onClick={() => console.info("button blue click")}
       >
         $100
       </button>
     </MarkerOverlayView>
-    <MarkerOverlayView position={{ lat: 36, lng: -121 }}>
+    <MarkerOverlayView id={"red"} position={{ lat: 36, lng: -121 }}>
       <button
         key={"red"}
+        title={"Marker"}
         style={{ color: "red" }}
         onClick={() => console.info("button red click")}
       >
         $200
       </button>
     </MarkerOverlayView>
+    <ZoomControl position="RIGHT_BOTTOM" />
   </DocsMap>
 </Playground>
 
