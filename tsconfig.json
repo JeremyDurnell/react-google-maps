@@ -10,7 +10,6 @@
 
     // Do not check type for this (pointers).
     "noImplicitThis": false,
-    "noImplicitReturns":false,
 
     // Enable JSX.
     "jsx": "react",
