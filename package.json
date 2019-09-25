@@ -1,21 +1,21 @@
 {
   "private": false,
   "license": "MIT",
-  "version": "0.0.21",
+  "version": "0.0.22",
   "name": "react-google-maps",
   "description": "Google Maps integration with React",
   "engines": {
     "node": ">=8.3.0"
   },
-  "main": "index.js",
-  "module": "index.es.js",
-  "es2015": "index.es2015.js",
+  "main": "dist/index.js",
+  "module": "dist/index.es.js",
+  "es2015": "dist/index.es2015.js",
   "typings": "typings/index.d.ts",
   "files": [
     "typings/**",
-    "index.js",
-    "index.es.js",
-    "index.es2015.js"
+    "dist/index.js",
+    "dist/index.es.js",
+    "dist/index.es2015.js"
   ],
   "scripts": {
     "ci": "yarn lint && yarn tsc && yarn cover --ci --runInBand",
@@ -32,7 +32,8 @@
   },
   "peerDependencies": {
     "react": "^16.8.0-alpha.0",
-    "react-dom": "^16.8.0-alpha.0"
+    "react-dom": "^16.8.0-alpha.0",
+    "lodash.debounce": "^4.0.8"
   },
   "devDependencies": {
     "@babel/core": "^7.0.0-0",
@@ -74,7 +75,6 @@
     "jest": "^23.0.0",
     "jest-circus": "^23.6.0",
     "jest-dom": "^3.0.0",
-    "lodash.debounce": "^4.0.8",
     "prettier": "^1.16.1",
     "react": "16.8.0-alpha.0",
     "react-dom": "16.8.0-alpha.0",
