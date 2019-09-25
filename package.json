@@ -21,7 +21,7 @@
     "ci": "yarn lint && yarn tsc && yarn cover --ci --runInBand",
     "ci-fix": "yarn lint --fix && yarn tsc && yarn cover",
     "lint": "stylotron lint",
-    "test": "jest --watch",
+    "test": "jest",
     "cover": "jest --coverage",
     "codecov": "codecov -f ./coverage/lcov.info",
     "start": "docz dev",
