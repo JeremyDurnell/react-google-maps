@@ -1,5 +1,6 @@
 import React, { ReactElement, useEffect, useState } from "react";
 import { createPortal } from "react-dom";
+import debounce from "lodash/debounce";
 
 import {
   GoogleMapOverlayViewContext,
@@ -83,6 +84,19 @@ export function MarkerOverlayView({
   const overlayView = useMemoOnce(() => new maps.OverlayView());
 
   /**
+   * Map container to be used for click events.
+   * [Map Container's id has been set to 'map_canvas'].
+   */
+  const mapContainer = document.getElementById(MapEnums.ID) as Element;
+
+  /**
+   * Pointer to maps.OverlayView.
+   * We need this to use preventMapHitsFrom static method from the Google Maps API.
+   * There is no type exist for this API as of yet.
+   */
+  const OverlayView: any = maps.OverlayView;
+
+  /**
    * OverlayView div container to be drawn on the map.
    */
   const [overlayViewContainer] = useState<HTMLDivElement>(
@@ -94,26 +108,49 @@ export function MarkerOverlayView({
   );
 
   /**
-   * Map container to be used for click events.
-   * [Map Container's id has been set to 'map_canvas'].
+   * Call preventMapHitsFrom static function on the OverlayView Api.
+   * Stops click or tap on the element from bubbling up to the map.
+   * We Use this to prevent the map from triggering "click" events on Markers.
    */
-  const mapContainer = document.getElementById(MapEnums.ID) as Element;
+  OverlayView.preventMapHitsFrom(overlayViewContainer);
 
   /**
-   * Use Effect Hook for Google Maps OverlayView API events.
+   * Returns to a lodash debounce function to remove 'selected' and 'active' classes from
+   * the overlayViewContainer when the map is clicked.
+   * The debounced function comes with a cancel method to cancel
+   * delayed invocations.
    */
-  function mapContainerClickListener(event: MouseEvent): void {
-    const pointerTarget =
-      (event.target as Element) ||
-      (event.relatedTarget as Element) ||
-      (event.toElement as Element);
+  const generateDebouncedClickListener = () =>
+    debounce(() => {
+      if (overlayViewContainer.classList.contains("selected")) {
+        overlayViewContainer.classList.remove("selected");
+      }
+      if (overlayViewContainer.classList.contains("active")) {
+        overlayViewContainer.classList.remove("active");
+      }
+    }, 200);
 
-    if (!overlayViewContainer.contains(pointerTarget)) {
+  /**
+   *  mapClickListener to be used for click and double click events.
+   */
+  const mapClickListener = generateDebouncedClickListener();
+
+  /**
+   *  mapContainerClickListener to be used for click events.
+   *  If user clicks another marker, we will remove the selected class from the previous one.
+   */
+  const mapContainerClickListener = (event: MouseEvent): void => {
+    const pointerTarget = event.target as HTMLElement;
+    const buttonElement = pointerTarget.closest("div > button") as HTMLElement;
+    const isMarker = buttonElement && buttonElement.dataset.type === "marker";
+    const isMap = pointerTarget.id === "map_canvas";
+
+    if ((isMarker || isMap) && !overlayViewContainer.contains(pointerTarget)) {
       if (overlayViewContainer.classList.contains("selected")) {
         overlayViewContainer.classList.remove("selected");
       }
     }
-  }
+  };
 
   /**
    * Adds 'selected' class to the overlayViewContainer when clicked.
@@ -122,11 +159,9 @@ export function MarkerOverlayView({
   function mouseDown(): void {
     const selected = overlayViewContainer.classList.contains("selected");
     const active = overlayViewContainer.classList.contains("active");
-
     if (selected && active) {
       return;
-    }
-    if (!selected && !active) {
+    } else if (!selected) {
       overlayViewContainer.classList.add("selected");
     } else if (active) {
       overlayViewContainer.classList.replace("active", "selected");
@@ -135,14 +170,41 @@ export function MarkerOverlayView({
   }
 
   /**
-   * Adds/Removes 'active' class to the overlayViewContainer when hovered/unhovered.
+   * Add 'active' class to the overlayViewContainer when hovered.
    */
-  function activeClassToggle(): void {
-    overlayViewContainer.classList.toggle("active");
+  function mouseEnter(): void {
+    overlayViewContainer.classList.add("active");
   }
 
   /**
-   * Use Effect Hook for Container events.
+   * Removes 'active' class to the overlayViewContainer when unhovered.
+   */
+  function mouseLeave(): void {
+    overlayViewContainer.classList.remove("active");
+  }
+
+  /**
+   * Use Effect Hook for OverlayView Container events.
+   */
+  useEffect(() => {
+    const mapClickHandler = map.addListener("click", mapClickListener);
+    const mapDoubleClickHandler = map.addListener(
+      "dblclick",
+      mapClickListener.cancel,
+    );
+    overlayViewContainer.addEventListener("mouseenter", mouseEnter);
+    overlayViewContainer.addEventListener("mouseleave", mouseLeave);
+    overlayViewContainer.addEventListener("mousedown", mouseDown);
+
+    return () => {
+      maps.event.removeListener(mapClickHandler);
+      maps.event.removeListener(mapDoubleClickHandler);
+      maps.event.clearInstanceListeners(overlayViewContainer);
+    };
+  }, [overlayViewContainer]);
+
+  /**
+   * Use Effect Hook for Map Container events.
    */
   useEffect(() => {
     const mapContainerClickHandler = maps.event.addDomListener(
@@ -151,17 +213,10 @@ export function MarkerOverlayView({
       mapContainerClickListener as EventListener,
     );
 
-    overlayViewContainer.addEventListener("mouseenter", activeClassToggle);
-    overlayViewContainer.addEventListener("mouseleave", activeClassToggle);
-    overlayViewContainer.addEventListener("mousedown", mouseDown);
-
     return () => {
       maps.event.removeListener(mapContainerClickHandler);
-      overlayViewContainer.removeEventListener("mouseenter", activeClassToggle);
-      overlayViewContainer.removeEventListener("mouseleave", activeClassToggle);
-      overlayViewContainer.removeEventListener("mousedown", mouseDown);
     };
-  }, [overlayViewContainer, mapContainer, maps]);
+  }, [mapContainer]);
 
   /**
    * Use Effect Hook for Google Maps OverlayView API events.
