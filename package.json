@@ -25,7 +25,7 @@
     "cover": "jest --coverage",
     "codecov": "codecov -f ./coverage/lcov.info",
     "start": "docz dev",
-    "build": "yarn build:bundle && yarn build:typings && yarn build:docs",
+    "build": "yarn build:bundle && yarn build:typings",
     "build:docs": "docz build",
     "build:bundle": "rollup -c rollup.config.js",
     "build:typings": "rimraf typings && tsc --project tsconfig.typings.json"
