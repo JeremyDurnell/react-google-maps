@@ -5,8 +5,12 @@
     // Do not compile code.
     "noEmit": true,
 
-    // Needed for markerclustererplus
+    // Allow any type.
     "noImplicitAny": false,
+
+    // Do not check type for this (pointers).
+    "noImplicitThis": false,
+    "noImplicitReturns":false,
 
     // Enable JSX.
     "jsx": "react",
@@ -30,7 +34,7 @@
   },
     "exclude": [
         "node_modules",
-        "src/marker-clusterer/markerclustererplus.js"
+        "src/marker-clusterer/markerclustererplus.ts"
     ]
 
 }

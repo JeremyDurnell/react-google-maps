@@ -1,6 +1,7 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { ReactElement, useEffect, useState } from "react";
 import { createPortal } from "react-dom";
-import debounce from "lodash/debounce";
+import debounce from "lodash.debounce";
 
 import {
   GoogleMapOverlayViewContext,
@@ -62,10 +63,11 @@ export function MarkerOverlayView({
     const divElement = document.createElement("div");
 
     Object.entries(attributes).forEach(entry => {
-      //Add it to container only when the value exist
+      // Add it to container only when the value exist
       if (entry[1]) {
         const key = entry[0];
         const value = entry[1];
+
         divElement.setAttribute(key, value);
       }
     });
@@ -94,7 +96,7 @@ export function MarkerOverlayView({
    * We need this to use preventMapHitsFrom static method from the Google Maps API.
    * There is no type exist for this API as of yet.
    */
-  const OverlayView: any = maps.OverlayView;
+  const OverlayView = maps.OverlayView;
 
   /**
    * OverlayView div container to be drawn on the map.
@@ -112,6 +114,7 @@ export function MarkerOverlayView({
    * Stops click or tap on the element from bubbling up to the map.
    * We Use this to prevent the map from triggering "click" events on Markers.
    */
+  // @ts-ignore
   OverlayView.preventMapHitsFrom(overlayViewContainer);
 
   /**
@@ -120,11 +123,13 @@ export function MarkerOverlayView({
    * The debounced function comes with a cancel method to cancel
    * delayed invocations.
    */
+  // @ts-ignore
   const generateDebouncedClickListener = () =>
     debounce(() => {
       if (overlayViewContainer.classList.contains("selected")) {
         overlayViewContainer.classList.remove("selected");
       }
+
       if (overlayViewContainer.classList.contains("active")) {
         overlayViewContainer.classList.remove("active");
       }
@@ -159,6 +164,7 @@ export function MarkerOverlayView({
   function mouseDown(): void {
     const selected = overlayViewContainer.classList.contains("selected");
     const active = overlayViewContainer.classList.contains("active");
+
     if (selected && active) {
       return;
     } else if (!selected) {
@@ -192,6 +198,7 @@ export function MarkerOverlayView({
       "dblclick",
       mapClickListener.cancel,
     );
+
     overlayViewContainer.addEventListener("mouseenter", mouseEnter);
     overlayViewContainer.addEventListener("mouseleave", mouseLeave);
     overlayViewContainer.addEventListener("mousedown", mouseDown);

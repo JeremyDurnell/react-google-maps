@@ -1,5 +1,5 @@
 import React, { ReactElement, useEffect } from "react";
-import { MarkerClustererPlus } from "./markerclustererplus.js";
+import { MarkerClustererPlus } from "./markerclustererplus";
 
 import {
   GoogleMapOverlayViewContext,
